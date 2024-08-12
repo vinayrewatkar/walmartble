@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, NativeModules, Button, PermissionsAndroid, Platform } from 'react-native';
-import { BleManager } from 'react-native-ble-plx';
+import { BleManager, Device } from 'react-native-ble-plx';
 import SystemSetting from 'react-native-system-setting';
 
 const { BLEAdvertiser } = NativeModules;
@@ -74,7 +74,7 @@ const App = () => {
     });
   };
 
-  const connectToDevice = async (device) => {
+  const connectToDevice = async (device: Device) => {
     try {
       const connectedDevice = await device.connect();
       await connectedDevice.discoverAllServicesAndCharacteristics();
@@ -85,6 +85,7 @@ const App = () => {
   };
 
   const startAdvertising = async () => {
+    requestPermissions();
     try {
       if (!BLEAdvertiser) {
         throw new Error('BLEAdvertiser module is not available');
@@ -94,7 +95,7 @@ const App = () => {
       const companyId = 0x004C; // Example Company ID
       const major = 12454; 
       const minor = 0; 
-      const payload = ''; // No additional payload for simplicity
+      const payload = '1'; // No additional payload for simplicity
   
       await BLEAdvertiser.broadcast(uuid, major, minor, companyId, payload);
       setIsAdvertising(true);
