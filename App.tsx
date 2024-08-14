@@ -34,12 +34,10 @@ const App = () => {
 
 		PushNotification.createChannel(
 			{
-				channelId: "default-channel-id",
-				channelName: "Default Channel",
-				channelDescription: "A default channel",
-				soundName: "default",
-				importance: 4,
-				vibrate: true,
+				channelId: "discount-alerts",
+				channelName: "Default Alerts",
+				channelDescription:
+					"A channel for sending discount alert notifications.",
 			},
 			(created) => console.log(`CreateChannel returned '${created}'`)
 		);
@@ -122,26 +120,15 @@ const App = () => {
 		}
 	};
 
-	const handleNotification = () => {
-		console.log("====================================");
-		console.log("Hello---1");
-		console.log("====================================");
-		PushNotification.localNotification({
-			channelId: "default-channel-id",
-			title: "Test Notification",
-			message: "This is a test notification!",
-		});
-	};
-
 	if (error) {
 		return <Text>Error: {error}</Text>;
 	}
 
 	return (
-		<ScrollView>
-			<View
-				style={{
-					display: "flex",
+		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+			<ScrollView
+				contentContainerStyle={{
+					flexGrow: 1,
 					justifyContent: "center",
 					alignItems: "center",
 				}}
@@ -163,7 +150,6 @@ const App = () => {
 							height: 10,
 						}}
 					/>
-					<Button title="Send Test Notification" onPress={handleNotification} />
 				</View>
 				{discountOffer ? (
 					<Text>{discountOffer.discount_offer}</Text>
@@ -173,8 +159,8 @@ const App = () => {
 						<Text>No discount offer available</Text>
 					</>
 				)}
-			</View>
-		</ScrollView>
+			</ScrollView>
+		</View>
 	);
 };
 

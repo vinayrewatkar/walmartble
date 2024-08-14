@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SOCKET_URL } from "@env";
+import PushNotification from "react-native-push-notification";
 
 interface DiscountOffer {
 	discount_offer: string;
@@ -25,6 +26,7 @@ export const useDiscountData = () => {
 
 			newSocket.onmessage = (event) => {
 				const data: { discount_offer: string } = JSON.parse(event.data);
+				triggerNotification(data.discount_offer);
 				setDiscountOffer({ discount_offer: data.discount_offer });
 				console.log(data);
 			};
@@ -49,6 +51,19 @@ export const useDiscountData = () => {
 			socket.close();
 			setSocket(null);
 		}
+	};
+
+	const triggerNotification = (message: string) => {
+		PushNotification.localNotification({
+			channelId: "discount-alerts",
+			title: "🎉 Savings Alert!",
+			message: message,
+			playSound: true,
+			soundName: "default",
+			importance: "high",
+			priority: "high",
+			vibrate: true,
+		});
 	};
 
 	return {
