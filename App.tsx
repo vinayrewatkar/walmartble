@@ -37,7 +37,7 @@ const App = () => {
         setIsLocationOn(data);
       });
 
-      return () => subscription.remove();
+      return () => subscription?.remove();
     };
 
     addLocationListener();
@@ -102,7 +102,7 @@ const App = () => {
       setStatusMessage('Advertising started with Major: 12454');
     } catch (error) {
       console.error('Error starting advertising:', error);
-      setStatusMessage(`Error: ${error.message}`);
+      setStatusMessage(`Error: ${error}`);
     }
   };
   
@@ -117,7 +117,7 @@ const App = () => {
       setStatusMessage('Advertising stopped');
     } catch (error) {
       console.error('Error stopping advertising:', error);
-      setStatusMessage(`Error: ${error.message}`);
+      setStatusMessage(`Error: ${error}`);
     }
   };
 
