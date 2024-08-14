@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
-	View,
-	Text,
-	NativeModules,
 	Button,
+	NativeModules,
 	PermissionsAndroid,
 	Platform,
+	Text,
+	View,
 } from "react-native";
-import { BleManager, Device } from "react-native-ble-plx";
-import SystemSetting from "react-native-system-setting";
 import { useDiscountData } from "./hooks/useDiscountData";
 
 const { BLEAdvertiser } = NativeModules;
-const manager = new BleManager();
 
 const App = () => {
-	const [isLocationOn, setIsLocationOn] = useState(false);
 	const [isAdvertising, setIsAdvertising] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("Not advertising");
-	const { discountOffer, error, connectWebSocket, disconnectWebSocket } =
-		useDiscountData();
+	const { discountOffer, error, disconnectWebSocket } = useDiscountData();
 
 	useEffect(() => {
 		if (!BLEAdvertiser) {
@@ -28,29 +23,7 @@ const App = () => {
 			return;
 		}
 
-		const stateChangeListener = manager.onStateChange((state) => {
-			if (state === "PoweredOn") {
-				scan();
-			}
-		}, true);
-
 		requestPermissions();
-
-		return () => {
-			stateChangeListener?.remove();
-		};
-	}, []);
-
-	useEffect(() => {
-		const addLocationListener = async () => {
-			const subscription = await SystemSetting.addLocationListener((data) => {
-				setIsLocationOn(data);
-			});
-
-			return () => subscription?.remove();
-		};
-
-		addLocationListener();
 	}, []);
 
 	const requestPermissions = async () => {
@@ -69,34 +42,8 @@ const App = () => {
 		}
 	};
 
-	const scan = () => {
-		manager.startDeviceScan(null, null, (error, device) => {
-			if (error) {
-				console.error("Error during scan:", error);
-				return;
-			}
-
-			// Example: Looking for a specific device
-			if (device?.name === "My BLE Device") {
-				manager.stopDeviceScan();
-				connectToDevice(device);
-			}
-		});
-	};
-
-	const connectToDevice = async (device: Device) => {
-		try {
-			const connectedDevice = await device.connect();
-			await connectedDevice.discoverAllServicesAndCharacteristics();
-			console.log("Connected to device:", connectedDevice.name);
-		} catch (error) {
-			console.error("Error connecting to device:", error);
-		}
-	};
-
 	const startAdvertising = async () => {
 		requestPermissions();
-		connectWebSocket();
 		try {
 			if (!BLEAdvertiser) {
 				throw new Error("BLEAdvertiser module is not available");

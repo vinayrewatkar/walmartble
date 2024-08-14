@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { SOCKET_URL } from "@env";
 
 interface DiscountOffer {
@@ -11,45 +10,49 @@ export const useDiscountData = () => {
 		null
 	);
 	const [error, setError] = useState<string | null>(null);
+	const [socket, setSocket] = useState<WebSocket | null>(null);
 
-	let socket: WebSocket | null = null;
-	const socketUrl = SOCKET_URL;
-	const connectWebSocket = () => {
-		try {
-			if (socketUrl) {
-				socket = new WebSocket(`${socketUrl}12454`);
-				socket.onopen = () => {
-					console.log("WebSocket connection established");
+	useEffect(() => {
+		const socketUrl = SOCKET_URL;
+		const newSocket = new WebSocket(`${socketUrl}12454`);
+		setSocket(newSocket);
 
-					setError(null);
-				};
-				socket.onmessage = (event) => {
-					const data: { discount_offer: string } = JSON.parse(event.data);
-					setDiscountOffer({ discount_offer: data.discount_offer });
-					console.log(data);
-				};
-				socket.onerror = (error) => {
-					setError("WebSocket error: " + error.message);
-				};
-				socket.onclose = () => {
-					console.log("WebSocket connection closed");
-					setError(null);
-				};
-			}
-		} catch (error) {
-			setError(
-				"Error establishing WebSocket connection: " + (error as Error).message
-			);
+		newSocket.onopen = () => {
+			console.log("WebSocket connection established");
+			setError(null);
+		};
+
+		newSocket.onmessage = (event) => {
+			const data: { discount_offer: string } = JSON.parse(event.data);
+			setDiscountOffer({ discount_offer: data.discount_offer });
+			console.log(data);
+		};
+
+		newSocket.onerror = (error) => {
+			setError("WebSocket error: " + error.message);
+		};
+
+		newSocket.onclose = () => {
+			console.log("WebSocket connection closed");
+			setError(null);
+		};
+
+		return () => {
+			newSocket.close();
+		};
+	}, []);
+
+	const disconnectWebSocket = () => {
+		if (socket) {
+			socket.close();
+			console.log("WebSocket connection closed");
+			setSocket(null);
 		}
 	};
 
-	const disconnectWebSocket = () => {
-		return () => {
-			if (socket) {
-				socket.close();
-			}
-		};
+	return {
+		discountOffer,
+		error,
+		disconnectWebSocket,
 	};
-
-	return { discountOffer, connectWebSocket, disconnectWebSocket, error };
 };
