@@ -55,5 +55,5 @@ export const useDiscountData = () => {
         };
     }, []);
 
-    return { discountOffer, isLoading, error };
+    return { discountOffer, isLoading, error, setIsLoading };
 };
