@@ -6,10 +6,9 @@ import {
 	Platform,
 	Text,
 	View,
-	Alert
+	ScrollView,
 } from "react-native";
 import { useDiscountData } from "./hooks/useDiscountData";
-import PushNotification from 'react-native-push-notification';
 
 const { BLEAdvertiser } = NativeModules;
 
@@ -24,26 +23,6 @@ const App = () => {
 			setStatusMessage("BLEAdvertiser module is not available");
 			return;
 		}
-
-		// Configure Push Notifications
-		PushNotification.configure({
-			onNotification: function (notification) {
-				console.log('Notification:', notification);
-			},
-			requestPermissions: Platform.OS === 'ios',
-		});
-
-		PushNotification.createChannel(
-			{
-				channelId: 'default-channel-id',
-				channelName: 'Default Channel',
-				channelDescription: 'A default channel',
-				soundName: 'default',
-				importance: 4,
-				vibrate: true,
-			},
-			created => console.log(`CreateChannel returned '${created}'`),
-		);
 
 		requestPermissions();
 	}, []);
@@ -101,52 +80,39 @@ const App = () => {
 		}
 	};
 
-	const handleNotification = () => {
-		PushNotification.localNotification({
-			channelId: 'default-channel-id',
-			title: 'Test Notification',
-			message: 'This is a test notification!',
-		});
-	};
-
 	if (error) {
 		return <Text>Error: {error}</Text>;
 	}
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-				padding: 20,
-			}}
-		>
-			<Text style={{ fontSize: 20, marginBottom: 20 }}>
-				BLE Advertising & Scanning App
-			</Text>
-			<Text style={{ fontSize: 16, marginBottom: 10 }}>
-				Status: {statusMessage}
-			</Text>
-			<Button
-				title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
-				onPress={isAdvertising ? stopAdvertising : startAdvertising}
-			/>
-
-			<Button
-				title="Send Test Notification"
-				onPress={handleNotification}
-			/>
-
-			{discountOffer ? (
-				<Text>{discountOffer.discount_offer}</Text>
-			) : (
-				<>
-					<Text>Discount Offer</Text>
-					<Text>No discount offer available</Text>
-				</>
-			)}
-		</View>
+		<ScrollView>
+			<View
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Text style={{ fontSize: 20, marginBottom: 20 }}>
+					BLE Advertising & Scanning App
+				</Text>
+				<Text style={{ fontSize: 16, marginBottom: 10 }}>
+					Status: {statusMessage}
+				</Text>
+				<Button
+					title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
+					onPress={isAdvertising ? stopAdvertising : startAdvertising}
+				/>
+				{discountOffer ? (
+					<Text>{discountOffer.discount_offer}</Text>
+				) : (
+					<>
+						<Text>Discount Offer</Text>
+						<Text>No discount offer available</Text>
+					</>
+				)}
+			</View>
+		</ScrollView>
 	);
 };
 
