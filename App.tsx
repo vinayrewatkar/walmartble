@@ -18,7 +18,8 @@ const App = () => {
 	const [isLocationOn, setIsLocationOn] = useState(false);
 	const [isAdvertising, setIsAdvertising] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("Not advertising");
-	const { discountOffer, isLoading, error } = useDiscountData();
+	const { discountOffer, error, connectWebSocket, disconnectWebSocket } =
+		useDiscountData();
 
 	useEffect(() => {
 		if (!BLEAdvertiser) {
@@ -95,6 +96,7 @@ const App = () => {
 
 	const startAdvertising = async () => {
 		requestPermissions();
+		connectWebSocket();
 		try {
 			if (!BLEAdvertiser) {
 				throw new Error("BLEAdvertiser module is not available");
@@ -116,6 +118,7 @@ const App = () => {
 	};
 
 	const stopAdvertising = async () => {
+		disconnectWebSocket();
 		try {
 			if (!BLEAdvertiser) {
 				throw new Error("BLEAdvertiser module is not available");
