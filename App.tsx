@@ -6,6 +6,7 @@ import {
 	Platform,
 	Text,
 	View,
+	ScrollView,
 } from "react-native";
 import { useDiscountData } from "./hooks/useDiscountData";
 
@@ -86,34 +87,34 @@ const App = () => {
 	}
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-				padding: 20,
-			}}
-		>
-			<Text style={{ fontSize: 20, marginBottom: 20 }}>
-				BLE Advertising & Scanning App
-			</Text>
-			<Text style={{ fontSize: 16, marginBottom: 10 }}>
-				Status: {statusMessage}
-			</Text>
-			<Button
-				title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
-				onPress={isAdvertising ? stopAdvertising : startAdvertising}
-			/>
-
-			{discountOffer ? (
-				<Text>{discountOffer.discount_offer}</Text>
-			) : (
-				<>
-					<Text>Discount Offer</Text>
-					<Text>No discount offer available</Text>
-				</>
-			)}
-		</View>
+		<ScrollView>
+			<View
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Text style={{ fontSize: 20, marginBottom: 20 }}>
+					BLE Advertising & Scanning App
+				</Text>
+				<Text style={{ fontSize: 16, marginBottom: 10 }}>
+					Status: {statusMessage}
+				</Text>
+				<Button
+					title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
+					onPress={isAdvertising ? stopAdvertising : startAdvertising}
+				/>
+				{discountOffer ? (
+					<Text>{discountOffer.discount_offer}</Text>
+				) : (
+					<>
+						<Text>Discount Offer</Text>
+						<Text>No discount offer available</Text>
+					</>
+				)}
+			</View>
+		</ScrollView>
 	);
 };
 
