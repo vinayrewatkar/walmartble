@@ -6,16 +6,17 @@ import {
 	Platform,
 	Text,
 	View,
+	Alert
 } from "react-native";
 import { useDiscountData } from "./hooks/useDiscountData";
+import PushNotification from 'react-native-push-notification';
 
 const { BLEAdvertiser } = NativeModules;
 
 const App = () => {
 	const [isAdvertising, setIsAdvertising] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("Not advertising");
-	const { discountOffer, error, connectWebSocket, disconnectWebSocket } =
-		useDiscountData();
+	const { discountOffer, error, disconnectWebSocket } = useDiscountData();
 
 	useEffect(() => {
 		if (!BLEAdvertiser) {
@@ -23,6 +24,26 @@ const App = () => {
 			setStatusMessage("BLEAdvertiser module is not available");
 			return;
 		}
+
+		// Configure Push Notifications
+		PushNotification.configure({
+			onNotification: function (notification) {
+				console.log('Notification:', notification);
+			},
+			requestPermissions: Platform.OS === 'ios',
+		});
+
+		PushNotification.createChannel(
+			{
+				channelId: 'default-channel-id',
+				channelName: 'Default Channel',
+				channelDescription: 'A default channel',
+				soundName: 'default',
+				importance: 4,
+				vibrate: true,
+			},
+			created => console.log(`CreateChannel returned '${created}'`),
+		);
 
 		requestPermissions();
 	}, []);
@@ -45,7 +66,6 @@ const App = () => {
 
 	const startAdvertising = async () => {
 		requestPermissions();
-		connectWebSocket();
 		try {
 			if (!BLEAdvertiser) {
 				throw new Error("BLEAdvertiser module is not available");
@@ -81,6 +101,14 @@ const App = () => {
 		}
 	};
 
+	const handleNotification = () => {
+		PushNotification.localNotification({
+			channelId: 'default-channel-id',
+			title: 'Test Notification',
+			message: 'This is a test notification!',
+		});
+	};
+
 	if (error) {
 		return <Text>Error: {error}</Text>;
 	}
@@ -103,6 +131,11 @@ const App = () => {
 			<Button
 				title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
 				onPress={isAdvertising ? stopAdvertising : startAdvertising}
+			/>
+
+			<Button
+				title="Send Test Notification"
+				onPress={handleNotification}
 			/>
 
 			{discountOffer ? (
