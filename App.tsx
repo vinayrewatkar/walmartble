@@ -9,13 +9,14 @@ import {
 	ScrollView,
 } from "react-native";
 import { useDiscountData } from "./hooks/useDiscountData";
-
+import PushNotification from "react-native-push-notification";
 const { BLEAdvertiser } = NativeModules;
 
 const App = () => {
 	const [isAdvertising, setIsAdvertising] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("Not advertising");
-	const { discountOffer, error, disconnectWebSocket } = useDiscountData();
+	const { discountOffer, error, disconnectWebSocket, connectWebSocket } =
+		useDiscountData();
 
 	useEffect(() => {
 		if (!BLEAdvertiser) {
@@ -24,7 +25,27 @@ const App = () => {
 			return;
 		}
 
+		PushNotification.configure({
+			onNotification: function (notification) {
+				console.log("Notification:", notification);
+			},
+			requestPermissions: Platform.OS === "ios",
+		});
+
+		PushNotification.createChannel(
+			{
+				channelId: "default-channel-id",
+				channelName: "Default Channel",
+				channelDescription: "A default channel",
+				soundName: "default",
+				importance: 4,
+				vibrate: true,
+			},
+			(created) => console.log(`CreateChannel returned '${created}'`)
+		);
+
 		requestPermissions();
+		requestNotificationPermission();
 	}, []);
 
 	const requestPermissions = async () => {
@@ -44,6 +65,7 @@ const App = () => {
 	};
 
 	const startAdvertising = async () => {
+		connectWebSocket();
 		requestPermissions();
 		try {
 			if (!BLEAdvertiser) {
@@ -65,6 +87,26 @@ const App = () => {
 		}
 	};
 
+	const requestNotificationPermission = async () => {
+		if (Platform.OS === "android" && Platform.Version >= 33) {
+			// Android 13 is version 33
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+				{
+					title: "Notification Permission",
+					message: "This app needs access to send you notifications.",
+					buttonNeutral: "Ask Me Later",
+					buttonNegative: "Cancel",
+					buttonPositive: "OK",
+				}
+			);
+
+			if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("Notification permission denied");
+			}
+		}
+	};
+
 	const stopAdvertising = async () => {
 		disconnectWebSocket();
 		try {
@@ -78,6 +120,17 @@ const App = () => {
 			console.error("Error stopping advertising:", error);
 			setStatusMessage(`Error: ${error}`);
 		}
+	};
+
+	const handleNotification = () => {
+		console.log("====================================");
+		console.log("Hello---1");
+		console.log("====================================");
+		PushNotification.localNotification({
+			channelId: "default-channel-id",
+			title: "Test Notification",
+			message: "This is a test notification!",
+		});
 	};
 
 	if (error) {
@@ -99,10 +152,19 @@ const App = () => {
 				<Text style={{ fontSize: 16, marginBottom: 10 }}>
 					Status: {statusMessage}
 				</Text>
-				<Button
-					title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
-					onPress={isAdvertising ? stopAdvertising : startAdvertising}
-				/>
+				<View>
+					<Button
+						title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
+						onPress={isAdvertising ? stopAdvertising : startAdvertising}
+					/>
+					<View
+						style={{
+							width: 10,
+							height: 10,
+						}}
+					/>
+					<Button title="Send Test Notification" onPress={handleNotification} />
+				</View>
 				{discountOffer ? (
 					<Text>{discountOffer.discount_offer}</Text>
 				) : (
