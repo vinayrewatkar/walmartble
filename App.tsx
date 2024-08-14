@@ -14,7 +14,8 @@ const { BLEAdvertiser } = NativeModules;
 const App = () => {
 	const [isAdvertising, setIsAdvertising] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("Not advertising");
-	const { discountOffer, error, disconnectWebSocket } = useDiscountData();
+	const { discountOffer, error, connectWebSocket, disconnectWebSocket } =
+		useDiscountData();
 
 	useEffect(() => {
 		if (!BLEAdvertiser) {
@@ -44,6 +45,7 @@ const App = () => {
 
 	const startAdvertising = async () => {
 		requestPermissions();
+		connectWebSocket();
 		try {
 			if (!BLEAdvertiser) {
 				throw new Error("BLEAdvertiser module is not available");
