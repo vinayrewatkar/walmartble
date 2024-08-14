@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, NativeModules, Button, PermissionsAndroid, Platform } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 import SystemSetting from 'react-native-system-setting';
+import { useDiscountData } from './hooks/useDiscountData';
 
 const { BLEAdvertiser } = NativeModules;
 const manager = new BleManager();
@@ -10,6 +11,7 @@ const App = () => {
   const [isLocationOn, setIsLocationOn] = useState(false);
   const [isAdvertising, setIsAdvertising] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Not advertising');
+  const { discountOffer, isLoading, error } = useDiscountData();
 
   useEffect(() => {
     if (!BLEAdvertiser) {
@@ -37,7 +39,7 @@ const App = () => {
         setIsLocationOn(data);
       });
 
-      return () => subscription.remove();
+      return () => subscription?.remove();
     };
 
     addLocationListener();
@@ -102,7 +104,7 @@ const App = () => {
       setStatusMessage('Advertising started with Major: 12454');
     } catch (error) {
       console.error('Error starting advertising:', error);
-      setStatusMessage(`Error: ${error.message}`);
+      setStatusMessage(`Error: ${error?.message}`);
     }
   };
   
@@ -117,9 +119,17 @@ const App = () => {
       setStatusMessage('Advertising stopped');
     } catch (error) {
       console.error('Error stopping advertising:', error);
-      setStatusMessage(`Error: ${error.message}`);
+      setStatusMessage(`Error: ${error?.message}`);
     }
   };
+
+  if (isLoading) {
+    return <Text>LOADING...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
@@ -129,6 +139,15 @@ const App = () => {
         title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
         onPress={isAdvertising ? stopAdvertising : startAdvertising}
       />
+      
+      {discountOffer ? (
+        <Text>{discountOffer.discount_offer}</Text>
+      ) : (
+        <>
+          <Text>Discount Offer</Text>
+          <Text>No discount offer available</Text>
+        </>
+      )}
     </View>
   );
 };
