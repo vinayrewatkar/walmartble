@@ -1,9 +1,15 @@
-import { Image, Text, View } from "react-native";
+import React from "react";
+import { Image, Text, View, ImageSourcePropType } from "react-native";
 import { colors, styles } from "../styles/styles";
-import profile from "../assets/icons/profile.png";
-import search from "../assets/icons/search.png";
 
-const Navbar = () => {
+const profile: ImageSourcePropType = require("../assets/icons/profile.png");
+const search: ImageSourcePropType = require("../assets/icons/search.png");
+
+interface NavbarProps {
+	screen: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ screen }) => {
 	return (
 		<View
 			style={[
@@ -18,13 +24,13 @@ const Navbar = () => {
 				},
 			]}
 		>
-			<Image style={{ width: 30, height: 30 }} source={profile}></Image>
+			<Image style={{ width: 30, height: 30 }} source={profile} />
 			<Text
 				style={[styles.textMedium, styles.textBold, { color: colors.black }]}
 			>
-				Home
+				{screen}
 			</Text>
-			<Image style={{ width: 30, height: 30 }} source={search}></Image>
+			<Image style={{ width: 30, height: 30 }} source={search} />
 		</View>
 	);
 };

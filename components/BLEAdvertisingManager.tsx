@@ -29,7 +29,7 @@ export const BLEAdvertisingManager: React.FC<BLEAdvertisingManagerProps> = ({
 			} catch (error) {
 				console.error("Error starting advertising:", error);
 				setStatusMessage(`Error: ${error}`);
-				setIsEnabled(false); // Revert the switch state if there's an error
+				setIsEnabled(false);
 			}
 			connectWebSocket();
 		} else {
@@ -40,7 +40,7 @@ export const BLEAdvertisingManager: React.FC<BLEAdvertisingManagerProps> = ({
 			} catch (error) {
 				console.error("Error stopping advertising:", error);
 				setStatusMessage(`Error: ${error}`);
-				setIsEnabled(true); // Revert the switch state if there's an error
+				setIsEnabled(true);
 			}
 		}
 	};
