@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { NotificationCard } from "./components/DiscountCard";
+import { DiscountScreen } from "./screens/DiscountScreen";
 import HomeScreen from "./screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
@@ -16,8 +16,8 @@ const App = () => {
 					options={{ headerShown: false }}
 				/>
 				<Stack.Screen
-					name="Notifications"
-					component={NotificationCard}
+					name="Discounts"
+					component={DiscountScreen}
 					options={{ headerShown: false }}
 				/>
 			</Stack.Navigator>

@@ -3,12 +3,9 @@ import { Text, View, TouchableOpacity, Image } from "react-native";
 import { styles, colors, spacing, borderRadius } from "../styles/styles";
 import Navbar from "./Navbar";
 
-export const NotificationCard = () => {
+export const DiscountCard = () => {
 	return (
-		<View
-			style={[styles.container, { paddingVertical: 50, paddingHorizontal: 30 }]}
-		>
-			<Navbar screen="Discounts" />
+		<View>
 			<Text
 				style={[styles.textMedium, styles.textRegular, styles.marginBottom]}
 			>

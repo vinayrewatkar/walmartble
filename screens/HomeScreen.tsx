@@ -10,7 +10,7 @@ import { setupNotifications } from "../utils/notificationUtils";
 
 type RootStackParamList = {
 	Home: undefined;
-	Notifications: undefined;
+	Discounts: undefined;
 };
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -87,8 +87,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 				)}
 			/>
 			<Button
-				title="Notifications"
-				onPress={() => navigation.navigate("Notifications")}
+				title="Discounts"
+				onPress={() => navigation.navigate("Discounts")}
 			/>
 			{/* Commented Discount offer here*/}
 			{/* <DiscountOfferDisplay discountOffer={discountOffer} /> */}
