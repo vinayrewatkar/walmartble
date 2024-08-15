@@ -1,20 +1,24 @@
 import React from "react";
-import { Text, View, TouchableOpacity, Image } from "react-native";
-import { styles, colors, spacing, borderRadius } from "../styles/styles";
-import Navbar from "./Navbar";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { borderRadius, colors, spacing, styles } from "../styles/styles";
 
-export const DiscountCard = () => {
+interface DiscountCardProps {
+	discount_offer: string;
+}
+const DiscountCard: React.FC<DiscountCardProps> = ({
+	discount_offer = "No discount available",
+}) => {
 	return (
 		<View>
-			<Text
-				style={[styles.textMedium, styles.textRegular, styles.marginBottom]}
-			>
-				Previously
-			</Text>
 			<View
 				style={[
 					styles.card,
-					{ backgroundColor: colors.primary, padding: 0, overflow: "hidden" },
+					{
+						backgroundColor: colors.primary,
+						padding: 0,
+						overflow: "hidden",
+						marginBottom: 10,
+					},
 				]}
 			>
 				<View style={styles.row}>
@@ -40,7 +44,7 @@ export const DiscountCard = () => {
 								{ color: colors.white, marginBottom: spacing.md },
 							]}
 						>
-							30% discount on all home decoration products
+							{discount_offer}
 						</Text>
 						<TouchableOpacity
 							style={[
@@ -68,3 +72,5 @@ export const DiscountCard = () => {
 		</View>
 	);
 };
+
+export default DiscountCard;
