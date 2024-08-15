@@ -21,3 +21,16 @@ export const setupNotifications = () => {
 
 	requestNotificationPermission();
 };
+
+export const triggerNotification = (message: string) => {
+	PushNotification.localNotification({
+		channelId: "discount-alerts",
+		title: "🎉 Savings Alert!",
+		message: message,
+		playSound: true,
+		soundName: "default",
+		importance: "high",
+		priority: "high",
+		vibrate: true,
+	});
+};

@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import { useDiscountData } from "../hooks/useDiscountData";
 import { colors, styles } from "../styles/styles";
 import bulletPoints from "../utils/bulletPoints";
-import { setupNotifications } from "../utils/notificationSetup";
+import { setupNotifications } from "../utils/notificationUtils";
 
 type RootStackParamList = {
 	Home: undefined;
