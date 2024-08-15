@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, Button } from "react-native";
+import { Switch, Text, View } from "react-native";
+import { colors, styles } from "../styles/styles";
 import { startAdvertising, stopAdvertising } from "../utils/bleUtils";
 
 interface BLEAdvertisingManagerProps {
@@ -15,41 +16,64 @@ export const BLEAdvertisingManager: React.FC<BLEAdvertisingManagerProps> = ({
 	connectWebSocket,
 	disconnectWebSocket,
 }) => {
-	const [isAdvertising, setIsAdvertising] = useState(false);
+	const [isEnabled, setIsEnabled] = useState(false);
 
-	const handleStartAdvertising = async () => {
-		connectWebSocket();
-		try {
-			await startAdvertising();
-			setIsAdvertising(true);
-			setStatusMessage("Advertising started with Major: 12454");
-		} catch (error) {
-			console.error("Error starting advertising:", error);
-			setStatusMessage(`Error: ${error}`);
-		}
-	};
+	const toggleSwitch = async () => {
+		const newState = !isEnabled;
+		setIsEnabled(newState);
 
-	const handleStopAdvertising = async () => {
-		disconnectWebSocket();
-		try {
-			await stopAdvertising();
-			setIsAdvertising(false);
-			setStatusMessage("Advertising stopped");
-		} catch (error) {
-			console.error("Error stopping advertising:", error);
-			setStatusMessage(`Error: ${error}`);
+		if (newState) {
+			connectWebSocket();
+			try {
+				await startAdvertising();
+				setStatusMessage("Start Roaming Around the Store.");
+			} catch (error) {
+				console.error("Error starting advertising:", error);
+				setStatusMessage(`Error: ${error}`);
+				setIsEnabled(false); // Revert the switch state if there's an error
+			}
+		} else {
+			disconnectWebSocket();
+			try {
+				await stopAdvertising();
+				setStatusMessage("Start Discovering Offers Around.");
+			} catch (error) {
+				console.error("Error stopping advertising:", error);
+				setStatusMessage(`Error: ${error}`);
+				setIsEnabled(true); // Revert the switch state if there's an error
+			}
 		}
 	};
 
 	return (
-		<View>
-			<Text style={{ fontSize: 16, marginBottom: 10 }}>
-				Status: {statusMessage}
-			</Text>
-			<Button
-				title={isAdvertising ? "Stop Advertising" : "Start Advertising"}
-				onPress={isAdvertising ? handleStopAdvertising : handleStartAdvertising}
-			/>
+		<View style={{ maxWidth: 300 }}>
+			<View style={[styles.centerContent, styles.paddingHorizontal]}>
+				<Switch
+					trackColor={{ false: colors.primary, true: colors.secondary }}
+					thumbColor={"white"}
+					ios_backgroundColor="#3e3e3e"
+					onValueChange={toggleSwitch}
+					style={{
+						transform: [{ scaleX: 3 }, { scaleY: 3 }],
+						marginBottom: 50,
+					}}
+					value={isEnabled}
+				/>
+				<Text
+					style={[
+						styles.textMedium,
+						styles.textBold,
+						{
+							color: colors.black,
+							textAlign: "center",
+							maxWidth: 240,
+							marginBottom: 60,
+						},
+					]}
+				>
+					{statusMessage}
+				</Text>
+			</View>
 		</View>
 	);
 };
