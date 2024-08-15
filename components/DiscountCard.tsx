@@ -2,12 +2,12 @@ import React from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { styles, colors, spacing, borderRadius } from "../styles/styles";
 
-
 export const NotificationCard = () => {
     return (
         <View style={[styles.container, styles.paddingHorizontal]}>
-            <View style={[styles.row,styles.container, styles.marginBottom, styles.centerContent, {justifyContent:"center"}]}>
-                <Text style={[styles.textMedium, styles.textBold, { flex: 1 }]}>
+            {/* Centering the 'Notifications' text */}
+            <View style={[styles.row, styles.marginBottom, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={[styles.textMedium, styles.textBold, { textAlign: 'center' }]}>
                     Notifications
                 </Text>
             </View>
