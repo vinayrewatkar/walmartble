@@ -16,7 +16,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public List<ReactPackage> getPackages() {
       List<ReactPackage> packages = new PackageList(this).getPackages();
-      packages.add(new BLEAdvertiserPackage()); // Add your BLEAdvertiserPackage here
+
       return packages;
     }
 
