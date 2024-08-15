@@ -2,8 +2,8 @@ import { StyleSheet } from "react-native";
 
 const colors = {
 	primary: "#007AFF",
-	secondary: "#5856D6",
-	background: "#F2F2F7",
+	secondary: "#FFB001",
+	background: "#EDFBFF",
 	text: "#000000",
 	textSecondary: "#8E8E93",
 	success: "#34C759",
@@ -59,7 +59,7 @@ const borderRadius = {
 const styles = StyleSheet.create({
 	// Layout
 	container: {
-		flex: 1,
+		display: "flex",
 		backgroundColor: colors.background,
 	},
 	row: {
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 	},
 	centerContent: {
-		justifyContent: "center",
 		alignItems: "center",
+		justifyContent: "center",
 	},
 
 	// Typography
@@ -155,10 +155,10 @@ const styles = StyleSheet.create({
 
 	// Margins and Paddings
 	marginBottom: {
-		marginBottom: spacing.md,
+		marginBottom: spacing.lg,
 	},
 	paddingHorizontal: {
-		paddingHorizontal: spacing.md,
+		paddingHorizontal: spacing.xs,
 	},
 });
 

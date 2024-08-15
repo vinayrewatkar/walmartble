@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { FlatList, ScrollView, Text, View } from "react-native";
 import { BLEAdvertisingManager } from "./components/BLEAdvertisingManager";
-import { DiscountOfferDisplay } from "./components/DiscountOfferDisplay";
+import Navbar from "./components/Navbar";
 import { useDiscountData } from "./hooks/useDiscountData";
 import { colors, styles } from "./styles/styles";
 import { setupNotifications } from "./utils/notificationSetup";
+import bulletPoints from "./utils/bulletPoints";
 
 const App = () => {
-	const [statusMessage, setStatusMessage] = useState("Not advertising");
+	const [statusMessage, setStatusMessage] = useState(
+		"Start Discovering Offers Around"
+	);
 	const { discountOffer, error, disconnectWebSocket, connectWebSocket } =
 		useDiscountData();
 
@@ -26,32 +29,47 @@ const App = () => {
 	}
 
 	return (
-		<View style={[styles.container, styles.centerContent]}>
-			<ScrollView
-				contentContainerStyle={[
-					styles.container,
-					styles.centerContent,
-					styles.paddingHorizontal,
-				]}
-			>
-				<Text
-					style={[
-						styles.textLarge,
-						styles.textBold,
-						styles.marginBottom,
-						{ color: colors.primary },
-					]}
-				>
-					Blue Retail
-				</Text>
+		<View
+			style={{
+				backgroundColor: colors.background,
+				flex: 1,
+				paddingVertical: 50,
+				paddingHorizontal: 30,
+			}}
+		>
+			<Navbar />
+			<View style={[styles.container, styles.centerContent]}>
 				<BLEAdvertisingManager
 					statusMessage={statusMessage}
 					setStatusMessage={setStatusMessage}
 					connectWebSocket={connectWebSocket}
 					disconnectWebSocket={disconnectWebSocket}
 				/>
-				<DiscountOfferDisplay discountOffer={discountOffer} />
-			</ScrollView>
+			</View>
+			<Text
+				style={[styles.textRegular, { color: colors.black, marginBottom: 15 }]}
+			>
+				Instructions :{" "}
+			</Text>
+			<FlatList
+				style={{ backgroundColor: colors.white, borderRadius: 10, padding: 20 }}
+				data={bulletPoints}
+				keyExtractor={(item, index) => index.toString()}
+				renderItem={({ item }) => (
+					<Text
+						style={[
+							styles.textMedium,
+							styles.textRegular,
+							styles.marginBottom,
+							{ textAlign: "left" },
+						]}
+					>
+						{item}
+					</Text>
+				)}
+			/>
+			{/* Commented Discount offer here*/}
+			{/* <DiscountOfferDisplay discountOffer={discountOffer} /> */}
 		</View>
 	);
 };
