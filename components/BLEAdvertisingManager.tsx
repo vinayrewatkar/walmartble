@@ -23,7 +23,6 @@ export const BLEAdvertisingManager: React.FC<BLEAdvertisingManagerProps> = ({
 		setIsEnabled(newState);
 
 		if (newState) {
-			connectWebSocket();
 			try {
 				await startAdvertising();
 				setStatusMessage("Start Roaming Around the Store.");
@@ -32,6 +31,7 @@ export const BLEAdvertisingManager: React.FC<BLEAdvertisingManagerProps> = ({
 				setStatusMessage(`Error: ${error}`);
 				setIsEnabled(false); // Revert the switch state if there's an error
 			}
+			connectWebSocket();
 		} else {
 			disconnectWebSocket();
 			try {

@@ -16,6 +16,7 @@ export const useDiscountData = () => {
 	const connectWebSocket = () => {
 		try {
 			const socketUrl = SOCKET_URL;
+			console.log(socketUrl)
 			const newSocket = new WebSocket(`${socketUrl}12454`);
 			setSocket(newSocket);
 
